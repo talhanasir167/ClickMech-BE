@@ -35,7 +35,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_13_184051) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "role", default: "customer", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["role"], name: "index_users_on_role"
   end
 
   add_foreign_key "appointments", "clients"

@@ -5,6 +5,7 @@ class AuthController < ApplicationController
 
   def register
     user = User.new(user_params)
+    user.role = permitted_role_for_registration(user.role)
     if user.save
       token = JwtHandler.encode(user_id: user.id)
       render json: { user: user_response(user), token: token }, status: :created
@@ -30,10 +31,14 @@ class AuthController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation)
+    params.require(:user).permit(:email, :password, :password_confirmation, :role)
+  end
+
+  def permitted_role_for_registration(role)
+    %w[customer mechanic].include?(role.to_s) ? role.to_s : "customer"
   end
 
   def user_response(user)
-    { id: user.id, email: user.email }
+    { id: user.id, email: user.email, role: user.role }
   end
 end
